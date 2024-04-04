@@ -11,7 +11,7 @@ fi
 
 # Find all JSON files in the directory and its subdirectories
 # and open them with labelme_draw_json
-find "$SEARCH_DIR" -maxdepth 1 -type f -name '*.json' | while read -r file; do
+find "$SEARCH_DIR" -maxdepth 1 -type f -name '*dumped.json' | while read -r file; do
   echo "Opening '$file'..."
   labelme_draw_json "$file"
 done

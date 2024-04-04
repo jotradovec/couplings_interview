@@ -1,4 +1,6 @@
+import glob
 import json
+import os
 
 
 class Point:
@@ -19,8 +21,16 @@ def compute_point(points: list[list[float]]) -> Point:
 
 
 def process_test_data():
-    filename = 'test_data/1583074100.306825_image_059.json'
-    with open(filename, 'r') as f:
+    dir_path = 'test_data'
+    # Use glob to find all files ending in .json in the directory
+    json_files = glob.glob(os.path.join(dir_path, '*.json'))
+
+    for file_path in json_files:
+        process_file(file_path)
+
+
+def process_file(file_path):
+    with open(file_path, 'r') as f:
         data = json.load(f)
         print(data)
         point = compute_point(data['shapes'][0]['points'])
@@ -38,7 +48,7 @@ def process_test_data():
         }
         data['shapes'].append(point_shape)
 
-        filename = 'test_data/dumped.json'
+        filename = file_path + 'dumped.json'
         with open(filename, 'w') as dump_f:
             json.dump(data, dump_f, indent=4)
     print(data)
