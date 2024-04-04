@@ -37,6 +37,18 @@
             "group_id": null,
             "shape_type": "point",
             "flags": {}
+        },
+        {
+            "label": "norm point",
+            "points": [
+                [
+                    95.16515261627909,
+                    84.6935562015504
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
         }
     ],
     "imagePath": "1585757486.511208_image_077.jpg",

@@ -1,0 +1,82 @@
+{
+    "version": "4.5.5",
+    "flags": {},
+    "shapes": [
+        {
+            "label": "joint",
+            "points": [
+                [
+                    585.4883720930234,
+                    535.6976744186047
+                ],
+                [
+                    592.4651162790699,
+                    728.7209302325582
+                ],
+                [
+                    1463.3953488372094,
+                    706.6279069767443
+                ],
+                [
+                    1452.9302325581396,
+                    495.00000000000006
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "polygon",
+            "flags": {}
+        },
+        {
+            "label": "point",
+            "points": [
+                [
+                    1023.5697674418604,
+                    616.5116279069769
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
+        },
+        {
+            "label": "norm point",
+            "points": [
+                [
+                    111.9529433139535,
+                    89.90794573643413
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
+        },
+        {
+            "label": "point",
+            "points": [
+                [
+                    1023.5697674418604,
+                    616.5116279069769
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
+        },
+        {
+            "label": "norm point",
+            "points": [
+                [
+                    111.9529433139535,
+                    89.90794573643413
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
+        }
+    ],
+    "imagePath": "1585768253.556199_image_016.jpg",
+    "imageData": null,
+    "imageHeight": 1536,
+    "imageWidth": 2048
+}

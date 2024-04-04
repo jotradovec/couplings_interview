@@ -1,0 +1,82 @@
+{
+    "version": "4.5.5",
+    "flags": {},
+    "shapes": [
+        {
+            "label": "joint",
+            "points": [
+                [
+                    1321.5348837209303,
+                    422.90697674418607
+                ],
+                [
+                    1333.1627906976744,
+                    705.4651162790698
+                ],
+                [
+                    1790.139534883721,
+                    697.3255813953489
+                ],
+                [
+                    1777.3488372093022,
+                    420.58139534883725
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "polygon",
+            "flags": {}
+        },
+        {
+            "label": "point",
+            "points": [
+                [
+                    1555.5465116279072,
+                    561.5697674418604
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
+        },
+        {
+            "label": "norm point",
+            "points": [
+                [
+                    170.13789970930236,
+                    81.89559108527132
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
+        },
+        {
+            "label": "point",
+            "points": [
+                [
+                    1555.5465116279072,
+                    561.5697674418604
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
+        },
+        {
+            "label": "norm point",
+            "points": [
+                [
+                    170.13789970930236,
+                    81.89559108527132
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
+        }
+    ],
+    "imagePath": "1585754773.411261_image_073.jpg",
+    "imageData": null,
+    "imageHeight": 1536,
+    "imageWidth": 2048
+}

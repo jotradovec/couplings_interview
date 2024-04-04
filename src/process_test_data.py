@@ -8,6 +8,11 @@ class Point:
         self.x = x
         self.y = y
 
+    def normalized(self, image_width, image_height):
+        width_ratio = image_width / 224
+        height_ratio = image_height / 224
+        return Point(self.x / width_ratio, self.y / height_ratio)
+
 
 def compute_point(points: list[list[float]]) -> Point:
     x_sum = 0
@@ -47,6 +52,21 @@ def process_file(file_path):
             "flags": {}
         }
         data['shapes'].append(point_shape)
+
+        normalized_point = point.normalized(image_width=data['imageWidth'], image_height=data['imageHeight'])
+        normalized_point_shape = {
+            "label": "norm point",
+            "points": [
+                [
+                    normalized_point.x,
+                    normalized_point.y
+                ]
+            ],
+            "group_id": None,
+            "shape_type": "point",
+            "flags": {}
+        }
+        data['shapes'].append(normalized_point_shape)
 
         filename = file_path + 'dumped.json'
         with open(filename, 'w') as dump_f:
