@@ -1,0 +1,34 @@
+{
+  "version": "4.5.5",
+  "flags": {},
+  "shapes": [
+    {
+      "label": "joint",
+      "points": [
+        [
+          1089.9718309859156,
+          527.3943661971831
+        ],
+        [
+          2047,
+          502
+        ],
+        [
+          2047,
+          682
+        ],
+        [
+          1097.0140845070423,
+          703.4507042253522
+        ]
+      ],
+      "group_id": null,
+      "shape_type": "polygon",
+      "flags": {}
+    }
+  ],
+  "imagePath": "1586019771.980939_image_97609.jpg",
+  "imageData": null,
+  "imageHeight": 1536,
+  "imageWidth": 2048
+}
