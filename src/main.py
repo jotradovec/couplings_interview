@@ -7,7 +7,7 @@ from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 from tensorflow.keras.optimizers import Adam
-from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 
 # Load the pre-trained MobileNetV2 model without the top layer
 base_model = MobileNetV2(weights='imagenet', include_top=False)
@@ -67,7 +67,6 @@ images = [load_and_preprocess_image(path) for path in image_paths]
 images = tf.convert_to_tensor(images)
 points = tf.convert_to_tensor(points)
 
-
 print(images)
 print(points)
 
@@ -95,4 +94,9 @@ train_dataset = train_dataset.batch(batch_size)
 val_dataset = val_dataset.batch(batch_size)
 
 # Example usage - remember to prepare your data accordingly
-model.fit(train_dataset, validation_data=val_dataset, epochs=10)
+model.fit(train_dataset, validation_data=val_dataset, epochs=15)
+
+val_loss = model.evaluate(val_dataset)
+print(f'Validation loss: {val_loss}')
+
+model.save('trained_model.keras')
