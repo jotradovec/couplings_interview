@@ -14,3 +14,7 @@ How and with which tools you approach the problem is up to you. We only ask that
 If training is involved, it should not take more than an hour on a GTX 1070 comparable GPU (or have a lower accuracy version that does not)
 
 We are interested in a working solution, but do not expect you to spend large amounts of time on it. A few percent of accuracy is not crucial as long as the basic algorithm works and you describe how you would go about pushing it further.
+
+## Assumptions
+- I assume that we can return some error message when no argument is provided
+- I assume we need to return some value for every image

@@ -39,39 +39,31 @@ def process_file(file_path):
         data = json.load(f)
         print(data)
         point = compute_point(data['shapes'][0]['points'])
-        point_shape = {
-            "label": "point",
-            "points": [
-                [
-                    point.x,
-                    point.y
-                ]
-            ],
-            "group_id": None,
-            "shape_type": "point",
-            "flags": {}
-        }
-        data['shapes'].append(point_shape)
+        add_point_shape(data, point, label='point')
 
         normalized_point = point.normalized(image_width=data['imageWidth'], image_height=data['imageHeight'])
-        normalized_point_shape = {
-            "label": "norm point",
-            "points": [
-                [
-                    normalized_point.x,
-                    normalized_point.y
-                ]
-            ],
-            "group_id": None,
-            "shape_type": "point",
-            "flags": {}
-        }
-        data['shapes'].append(normalized_point_shape)
+        add_point_shape(data, normalized_point, label='normalized_point')
 
         filename = file_path + 'dumped.json'
         with open(filename, 'w') as dump_f:
             json.dump(data, dump_f, indent=4)
     print(data)
+
+
+def add_point_shape(data, point, label):
+    point_shape = {
+        "label": label,
+        "points": [
+            [
+                point.x,
+                point.y
+            ]
+        ],
+        "group_id": None,
+        "shape_type": "point",
+        "flags": {}
+    }
+    data['shapes'].append(point_shape)
 
 
 if __name__ == '__main__':
