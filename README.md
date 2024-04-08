@@ -7,6 +7,7 @@
 2. (Optional) Activate venv
 
 ```console
+python3 -m venv venv
 source venv/bin/activate
 ```
 
