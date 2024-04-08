@@ -1,9 +1,6 @@
-import glob
 import json
-import os
 
 from app_main import CouplingsApp
-from process_test_data import DIR_PATH
 from train_main import get_image_paths, image_path_to_json_path
 
 
