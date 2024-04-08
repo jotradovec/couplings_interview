@@ -39,11 +39,35 @@
             "flags": {}
         },
         {
-            "label": "norm point",
+            "label": "normalized_point",
             "points": [
                 [
                     87.5343386627907,
                     133.53076550387598
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
+        },
+        {
+            "label": "left_upper_point",
+            "points": [
+                [
+                    530.8372093023256,
+                    775.232558139535
+                ]
+            ],
+            "group_id": null,
+            "shape_type": "point",
+            "flags": {}
+        },
+        {
+            "label": "right_lower_point",
+            "points": [
+                [
+                    1068.046511627907,
+                    1062.4418604651164
                 ]
             ],
             "group_id": null,

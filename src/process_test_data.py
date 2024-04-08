@@ -25,10 +25,20 @@ def compute_point(points: list[list[float]]) -> Point:
     return Point(x, y)
 
 
+DIR_PATH = 'test_data'
+
+
+def _get_original_json_paths():
+    all_jsons = glob.glob(os.path.join(DIR_PATH, '*.json'))
+    for json in all_jsons:
+        if 'dumped' in json:
+            all_jsons.remove(json)
+    return all_jsons
+
+
 def process_test_data():
-    dir_path = 'test_data'
     # Use glob to find all files ending in .json in the directory
-    json_files = glob.glob(os.path.join(dir_path, '*.json'))
+    json_files = _get_original_json_paths()
 
     for file_path in json_files:
         process_file(file_path)
@@ -39,10 +49,17 @@ def process_file(file_path):
         data = json.load(f)
         print(data)
         point = compute_point(data['shapes'][0]['points'])
+        left_upper_point = data['shapes'][0]['points'][0]
+        left_upper_point = Point(left_upper_point[0], left_upper_point[1])
+        right_lower_point = data['shapes'][0]['points'][2]
+        right_lower_point = Point(right_lower_point[0], right_lower_point[1])
         add_point_shape(data, point, label='point')
 
         normalized_point = point.normalized(image_width=data['imageWidth'], image_height=data['imageHeight'])
         add_point_shape(data, normalized_point, label='normalized_point')
+
+        add_point_shape(data, left_upper_point, label='left_upper_point')
+        add_point_shape(data, right_lower_point, label='right_lower_point')
 
         filename = file_path + 'dumped.json'
         with open(filename, 'w') as dump_f:

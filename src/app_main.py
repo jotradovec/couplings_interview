@@ -22,6 +22,7 @@ class CouplingsApp:
         if image_paths is None or image_paths == []:
             print("No image paths provided")
 
+        results = []
         for image_path in image_paths:
             print("Gonna load", image_path)
             image = load_image(image_path)
@@ -33,6 +34,8 @@ class CouplingsApp:
             prediction_denormalized = denormalize(prediction, original_image=image,
                                                   preprocessed_image=preprocessed_image)
             print(prediction_denormalized)
+            results.append(prediction_denormalized)
+        return results
 
 
 if __name__ == '__main__':

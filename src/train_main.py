@@ -9,6 +9,8 @@ from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
 
+from process_test_data import DIR_PATH
+
 
 def create_model():
     # Load the pre-trained MobileNetV2 model without the top layer
@@ -20,6 +22,8 @@ def create_model():
     # Add your own layers on top
     x = base_model.output
     x = GlobalAveragePooling2D()(x)
+    x = Dense(1024, activation='relu')(x)  # Dense layer
+    x = Dense(1024, activation='relu')(x)  # Dense layer
     x = Dense(1024, activation='relu')(x)  # Dense layer
     predictions = Dense(1)(x)  # Single output neuron without activation function for regression
 
@@ -49,10 +53,9 @@ def load_image(path):
 
 
 def get_image_paths() -> list[str]:
-    dir_path = 'test_data'
     # Use glob to find all files ending in .json in the directory
-    image_paths_jpeg = glob.glob(os.path.join(dir_path, '*.jpeg'))
-    image_paths_jpg = glob.glob(os.path.join(dir_path, '*.jpg'))
+    image_paths_jpeg = glob.glob(os.path.join(DIR_PATH, '*.jpeg'))
+    image_paths_jpg = glob.glob(os.path.join(DIR_PATH, '*.jpg'))
 
     return image_paths_jpg + image_paths_jpeg
 
@@ -60,14 +63,19 @@ def get_image_paths() -> list[str]:
 def get_image_points(image_paths) -> list[float]:
     points = []
     for path in image_paths:
-        stem = path.replace('.jpg', '')
-        stem = stem.replace('.jpeg', '')
-        json_path = stem + '.jsondumped.json'
+        json_path = image_path_to_json_path(path)
         with open(json_path, 'r') as f:
             data = json.load(f)
             x_coordinate = data['shapes'][2]['points'][0][0]
             points.append(x_coordinate)
     return points
+
+
+def image_path_to_json_path(path):
+    stem = path.replace('.jpg', '')
+    stem = stem.replace('.jpeg', '')
+    json_path = stem + '.jsondumped.json'
+    return json_path
 
 
 def run_training():
