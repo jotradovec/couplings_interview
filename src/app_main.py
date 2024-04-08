@@ -30,15 +30,19 @@ class CouplingsApp:
             input_data_batched = np.expand_dims(preprocessed_image, axis=0)
             predictions = self.model.predict(input_data_batched)
             prediction = predictions[0][0]
-            print(f'Prediction: {prediction/224}% from left?')
+            print(f'Prediction: {prediction / 224}% from left?')
             prediction_denormalized = denormalize(prediction, original_image=image,
                                                   preprocessed_image=preprocessed_image)
             print(prediction_denormalized)
             results.append(prediction_denormalized)
         return results
 
+    def print_model_summary(self):
+        self.model.summary()
+
 
 if __name__ == '__main__':
     app = CouplingsApp()
     image_paths = sys.argv[1:]
     app.run(image_paths)
+    #app.print_model_summary()

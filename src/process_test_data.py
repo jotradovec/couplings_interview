@@ -25,7 +25,7 @@ def compute_point(points: list[list[float]]) -> Point:
     return Point(x, y)
 
 
-DIR_PATH = 'test_data'
+DIR_PATH = 'src/test_data'
 
 
 def _get_original_json_paths():

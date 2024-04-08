@@ -21,10 +21,11 @@ def create_model():
 
     # Add your own layers on top
     x = base_model.output
-    x = GlobalAveragePooling2D()(x)
-    x = Dense(1024, activation='relu')(x)  # Dense layer
-    x = Dense(1024, activation='relu')(x)  # Dense layer
-    x = Dense(1024, activation='relu')(x)  # Dense layer
+    x = GlobalAveragePooling2D()(x) # Global average pooling layer at the end has 1280
+    x = Dense(1280, activation='relu')(x)
+    x = Dense(1024, activation='relu')(x)
+    x = Dense(256, activation='relu')(x)
+    x = Dense(64, activation='relu')(x)
     predictions = Dense(1)(x)  # Single output neuron without activation function for regression
 
     model = Model(inputs=base_model.input, outputs=predictions)
@@ -115,7 +116,7 @@ def run_training():
     val_dataset = val_dataset.batch(batch_size)
 
     # Example usage - remember to prepare your data accordingly
-    model.fit(train_dataset, validation_data=val_dataset, epochs=15)
+    model.fit(train_dataset, validation_data=val_dataset, epochs=40)
 
     val_loss = model.evaluate(val_dataset)
     print(f'Validation loss: {val_loss}')

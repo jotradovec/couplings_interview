@@ -29,6 +29,7 @@ def is_valid_prediction(image_path, prediction: float) -> bool:
 def validate_run():
     image_paths = get_image_paths()
     print(image_paths)
+    assert len(image_paths) > 0
     correct = 0
     app = CouplingsApp()
     predictions = app.run(image_paths)
