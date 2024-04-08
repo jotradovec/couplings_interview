@@ -36,7 +36,7 @@ class CouplingsApp:
                 print(f'Prediction: {prediction / 224}% from left?')
             prediction_denormalized = self.denormalize(prediction, original_image=image,
                                                        preprocessed_image=preprocessed_image)
-            print(prediction_denormalized)
+            print(round(prediction_denormalized))
             results.append(prediction_denormalized)
         return results
 
