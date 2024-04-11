@@ -7,7 +7,6 @@ from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 from tensorflow.keras.optimizers import Adam
-import matplotlib.pyplot as plt
 
 from process_test_data import DIR_PATH
 
@@ -19,7 +18,7 @@ def create_model():
     # Freeze the base model
     base_model.trainable = False
 
-    # Add your own layers on top
+    # Adding custom layers on top
     x = base_model.output
     x = GlobalAveragePooling2D()(x) # Global average pooling layer at the end has 1280
     x = Dense(1280, activation='relu')(x)
@@ -54,7 +53,7 @@ def load_image(path):
 
 
 def get_image_paths() -> list[str]:
-    # Use glob to find all files ending in .json in the directory
+    # Used glob to find all files ending in .json in the directory
     image_paths_jpeg = glob.glob(os.path.join(DIR_PATH, '*.jpeg'))
     image_paths_jpg = glob.glob(os.path.join(DIR_PATH, '*.jpg'))
 
@@ -81,28 +80,11 @@ def image_path_to_json_path(path):
 
 def run_training():
     model = create_model()
-    image_paths = get_image_paths()
-    points = get_image_points(image_paths)
+    dataset = load_dataset()
 
-    # Load all images into a list of tensors
-    images = [load_and_preprocess_image(path) for path in image_paths]
-    images = tf.convert_to_tensor(images)
-    points = tf.convert_to_tensor(points)
-
-    print(images)
-    print(points)
-
-    # Create a TensorFlow dataset from tensors
-    dataset = tf.data.Dataset.from_tensor_slices((images, points))
-
-    # Calculate the number of samples
-    num_samples = images.shape[0]
-
-    # Determine train and validation sizes
+    num_samples = len(dataset)
     train_size = int(0.8 * num_samples)
-    val_size = num_samples - train_size
 
-    # Shuffle the dataset
     dataset = dataset.shuffle(buffer_size=num_samples)
 
     # Split the dataset into training and validation
@@ -115,13 +97,27 @@ def run_training():
     train_dataset = train_dataset.batch(batch_size)
     val_dataset = val_dataset.batch(batch_size)
 
-    # Example usage - remember to prepare your data accordingly
+    # Epoch size lower than 40 was observed to be too small
     model.fit(train_dataset, validation_data=val_dataset, epochs=40)
 
     val_loss = model.evaluate(val_dataset)
     print(f'Validation loss: {val_loss}')
 
     model.save('trained_model.keras')
+
+
+def load_dataset():
+    image_paths = get_image_paths()
+    points = get_image_points(image_paths)
+    # Load all images into a list of tensors
+    images = [load_and_preprocess_image(path) for path in image_paths]
+    images = tf.convert_to_tensor(images)
+    points = tf.convert_to_tensor(points)
+    print(images)
+    print(points)
+    # Create a TensorFlow dataset from tensors
+    dataset = tf.data.Dataset.from_tensor_slices((images, points))
+    return dataset
 
 
 if __name__ == '__main__':
