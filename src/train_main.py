@@ -8,117 +8,117 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
 from tensorflow.keras.optimizers import Adam
 
-from process_test_data import DIR_PATH
 
+class CouplingsAppTrainer:
+    def __init__(self):
+        self.model_path = 'trained_model.keras'
+        self.image_dir_path = 'src/test_data'
 
-def create_model():
-    # Load the pre-trained MobileNetV2 model without the top layer
-    base_model = MobileNetV2(weights='imagenet', include_top=False)
+    @classmethod
+    def _create_model(cls):
+        # Load the pre-trained MobileNetV2 model without the top layer as the top layer is for classification
+        base_model = MobileNetV2(weights='imagenet', include_top=False)
 
-    # Freeze the base model
-    base_model.trainable = False
+        # Freeze the base model
+        base_model.trainable = False
 
-    # Adding custom layers on top
-    x = base_model.output
-    x = GlobalAveragePooling2D()(x) # Global average pooling layer at the end has 1280
-    x = Dense(1280, activation='relu')(x)
-    x = Dense(1024, activation='relu')(x)
-    x = Dense(256, activation='relu')(x)
-    x = Dense(64, activation='relu')(x)
-    predictions = Dense(1)(x)  # Single output neuron without activation function for regression
+        # Adding custom layers on top
+        x = base_model.output
+        x = GlobalAveragePooling2D()(x)  # Global average pooling layer at the end has 1280
+        x = Dense(1280, activation='relu')(x)
+        x = Dense(1024, activation='relu')(x)
+        x = Dense(256, activation='relu')(x)
+        x = Dense(64, activation='relu')(x)
+        predictions = Dense(1)(x)  # Single output neuron without activation function for regression
 
-    model = Model(inputs=base_model.input, outputs=predictions)
+        model = Model(inputs=base_model.input, outputs=predictions)
 
-    # Compile the model with a regression loss function
-    model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
-    return model
+        # Compile the model with a regression loss function
+        model.compile(optimizer=Adam(learning_rate=0.001), loss='mean_squared_error')
+        return model
 
+    def _load_and_preprocess_image(self, path):
+        image = self._load_image(path)
+        image = self._preprocess_image(image)
+        return image
 
-def load_and_preprocess_image(path):
-    image = load_image(path)
-    image = preprocess_image(image)
-    return image
+    @classmethod
+    def _preprocess_image(cls, image):
+        image = tf.image.resize(image, [224, 224])  # Resize images if needed
+        image = image / 255  # Normalize pixel values to [0, 1]
+        return image
 
+    @classmethod
+    def _load_image(cls, path):
+        image = tf.io.read_file(path)
+        image = tf.image.decode_jpeg(image, channels=3)
+        return image
 
-def preprocess_image(image):
-    image = tf.image.resize(image, [224, 224])  # Resize images if needed
-    image = image / 255  # Normalize pixel values to [0, 1]
-    return image
+    def _get_image_paths(self) -> list[str]:
+        # Used glob to find all files ending in .json in the directory
+        image_paths_jpeg = glob.glob(os.path.join(self.image_dir_path, '*.jpeg'))
+        image_paths_jpg = glob.glob(os.path.join(self.image_dir_path, '*.jpg'))
 
+        return image_paths_jpg + image_paths_jpeg
 
-def load_image(path):
-    image = tf.io.read_file(path)
-    image = tf.image.decode_jpeg(image, channels=3)
-    return image
+    def _get_image_points(self, image_paths) -> list[float]:
+        points = []
+        for path in image_paths:
+            json_path = self._image_path_to_json_path(path)
+            with open(json_path, 'r') as f:
+                data = json.load(f)
+                x_coordinate = data['shapes'][2]['points'][0][0]
+                points.append(x_coordinate)
+        return points
 
+    @staticmethod
+    def _image_path_to_json_path(path):
+        stem = path.replace('.jpg', '')
+        stem = stem.replace('.jpeg', '')
+        json_path = stem + '.jsondumped.json'
+        return json_path
 
-def get_image_paths() -> list[str]:
-    # Used glob to find all files ending in .json in the directory
-    image_paths_jpeg = glob.glob(os.path.join(DIR_PATH, '*.jpeg'))
-    image_paths_jpg = glob.glob(os.path.join(DIR_PATH, '*.jpg'))
+    def run_training(self):
+        model = self._create_model()
+        dataset = self._load_dataset()
 
-    return image_paths_jpg + image_paths_jpeg
+        num_samples = len(dataset)
+        train_size = int(0.8 * num_samples)
 
+        dataset = dataset.shuffle(buffer_size=num_samples)
 
-def get_image_points(image_paths) -> list[float]:
-    points = []
-    for path in image_paths:
-        json_path = image_path_to_json_path(path)
-        with open(json_path, 'r') as f:
-            data = json.load(f)
-            x_coordinate = data['shapes'][2]['points'][0][0]
-            points.append(x_coordinate)
-    return points
+        # Split the dataset into training and validation
+        train_dataset = dataset.take(train_size)
+        print(train_dataset)
+        val_dataset = dataset.skip(train_size)
+        print(val_dataset)
 
+        batch_size = 32
+        train_dataset = train_dataset.batch(batch_size)
+        val_dataset = val_dataset.batch(batch_size)
 
-def image_path_to_json_path(path):
-    stem = path.replace('.jpg', '')
-    stem = stem.replace('.jpeg', '')
-    json_path = stem + '.jsondumped.json'
-    return json_path
+        # Epoch size lower than 40 was observed to be too small
+        model.fit(train_dataset, validation_data=val_dataset, epochs=40)
 
+        val_loss = model.evaluate(val_dataset)
+        print(f'Validation loss: {val_loss}')
 
-def run_training():
-    model = create_model()
-    dataset = load_dataset()
+        model.save(self.model_path)
 
-    num_samples = len(dataset)
-    train_size = int(0.8 * num_samples)
-
-    dataset = dataset.shuffle(buffer_size=num_samples)
-
-    # Split the dataset into training and validation
-    train_dataset = dataset.take(train_size)
-    print(train_dataset)
-    val_dataset = dataset.skip(train_size)
-    print(val_dataset)
-
-    batch_size = 32
-    train_dataset = train_dataset.batch(batch_size)
-    val_dataset = val_dataset.batch(batch_size)
-
-    # Epoch size lower than 40 was observed to be too small
-    model.fit(train_dataset, validation_data=val_dataset, epochs=40)
-
-    val_loss = model.evaluate(val_dataset)
-    print(f'Validation loss: {val_loss}')
-
-    model.save('trained_model.keras')
-
-
-def load_dataset():
-    image_paths = get_image_paths()
-    points = get_image_points(image_paths)
-    # Load all images into a list of tensors
-    images = [load_and_preprocess_image(path) for path in image_paths]
-    images = tf.convert_to_tensor(images)
-    points = tf.convert_to_tensor(points)
-    print(images)
-    print(points)
-    # Create a TensorFlow dataset from tensors
-    dataset = tf.data.Dataset.from_tensor_slices((images, points))
-    return dataset
+    def _load_dataset(self):
+        image_paths = self._get_image_paths()
+        points = self._get_image_points(image_paths)
+        # Load all images into a list of tensors
+        images = [self._load_and_preprocess_image(path) for path in image_paths]
+        images = tf.convert_to_tensor(images)
+        points = tf.convert_to_tensor(points)
+        print(images)
+        print(points)
+        # Create a TensorFlow dataset from tensors
+        dataset = tf.data.Dataset.from_tensor_slices((images, points))
+        return dataset
 
 
 if __name__ == '__main__':
-    run_training()
+    trainer = CouplingsAppTrainer()
+    trainer.run_training()
