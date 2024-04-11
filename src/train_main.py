@@ -38,23 +38,23 @@ class CouplingsAppTrainer:
         return model
 
     def _load_and_preprocess_image(self, path):
-        image = self._load_image(path)
-        image = self._preprocess_image(image)
+        image = self.load_image(path)
+        image = self.preprocess_image(image)
         return image
 
     @classmethod
-    def _preprocess_image(cls, image):
+    def preprocess_image(cls, image):
         image = tf.image.resize(image, [224, 224])  # Resize images if needed
         image = image / 255  # Normalize pixel values to [0, 1]
         return image
 
     @classmethod
-    def _load_image(cls, path):
+    def load_image(cls, path):
         image = tf.io.read_file(path)
         image = tf.image.decode_jpeg(image, channels=3)
         return image
 
-    def _get_image_paths(self) -> list[str]:
+    def get_image_paths(self) -> list[str]:
         # Used glob to find all files ending in .json in the directory
         image_paths_jpeg = glob.glob(os.path.join(self.image_dir_path, '*.jpeg'))
         image_paths_jpg = glob.glob(os.path.join(self.image_dir_path, '*.jpg'))
@@ -64,7 +64,7 @@ class CouplingsAppTrainer:
     def _get_image_points(self, image_paths) -> list[float]:
         points = []
         for path in image_paths:
-            json_path = self._image_path_to_json_path(path)
+            json_path = self.image_path_to_json_path(path)
             with open(json_path, 'r') as f:
                 data = json.load(f)
                 x_coordinate = data['shapes'][2]['points'][0][0]
@@ -72,7 +72,7 @@ class CouplingsAppTrainer:
         return points
 
     @staticmethod
-    def _image_path_to_json_path(path):
+    def image_path_to_json_path(path):
         stem = path.replace('.jpg', '')
         stem = stem.replace('.jpeg', '')
         json_path = stem + '.jsondumped.json'
@@ -106,7 +106,7 @@ class CouplingsAppTrainer:
         model.save(self.model_path)
 
     def _load_dataset(self):
-        image_paths = self._get_image_paths()
+        image_paths = self.get_image_paths()
         points = self._get_image_points(image_paths)
         # Load all images into a list of tensors
         images = [self._load_and_preprocess_image(path) for path in image_paths]

@@ -3,13 +3,14 @@ import sys
 import tensorflow as tf
 import numpy as np
 
-from train_main import load_image, preprocess_image
+from train_main import CouplingsAppTrainer
 
 
 class CouplingsApp:
     def __init__(self, verbose=False):
         self.verbose = verbose
         self.model = tf.keras.models.load_model('src/trained_model.keras')
+        self.trainer = CouplingsAppTrainer()
 
     def denormalize(self, prediction: float, original_image, preprocessed_image):
         if self.verbose:
@@ -27,8 +28,8 @@ class CouplingsApp:
         for image_path in image_paths:
             if self.verbose:
                 print("Gonna load", image_path)
-            image = load_image(image_path)
-            preprocessed_image = preprocess_image(image)
+            image = self.trainer.load_image(image_path)
+            preprocessed_image = self.trainer.preprocess_image(image)
             input_data_batched = np.expand_dims(preprocessed_image, axis=0)
             predictions = self.model.predict(input_data_batched, verbose=0)
             prediction = predictions[0][0]
